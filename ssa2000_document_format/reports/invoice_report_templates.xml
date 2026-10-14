@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_invoice_document_ssa2000" inherit_id="account.report_invoice_document">
-        <!-- Cabecera: número, fecha, código de cliente y registro -->
-        <xpath expr="//div[@id='informations']" position="before">
-            <t t-call="ssa2000_document_format.ssa_document_styles"/>
-            <t t-call="ssa2000_document_format.ssa_document_header">
-                <t t-set="company" t-value="o.company_id"/>
-                <t t-set="doc_date" t-value="o.invoice_date"/>
-                <t t-set="partner_ref" t-value="o.partner_id.commercial_partner_id.ref"/>
-            </t>
+        <!-- Registro de la empresa junto al resto de datos de cabecera -->
+        <xpath expr="//div[@id='informations']" position="inside">
+            <div class="col" t-if="o.company_id.ssa_registry_code" name="ssa_registry">
+                <strong>Registro Junta de Andalucía</strong>
+                <div t-out="o.company_id.ssa_registry_code"/>
+            </div>
         </xpath>
-
-        <!-- La cabecera propia ya muestra fecha y código de cliente -->
-        <xpath expr="//div[@name='invoice_date']" position="replace"/>
-        <xpath expr="//div[@id='informations']//div[@name='customer_code']" position="replace"/>
 
         <!-- Albarán(es) de origen sobre la descripción de cada línea -->
         <xpath expr="//td[@name='account_invoice_line_name']" position="inside">
             <t t-set="ssa_pickings" t-value="line._ssa_get_pickings()"/>
-            <div class="ssa-picking-ref" t-if="ssa_pickings">
+            <div t-if="ssa_pickings">
                 <t t-foreach="ssa_pickings" t-as="ssa_picking">
                     Albarán núm. <span t-out="ssa_picking.name"/>
                     de fecha <span t-out="ssa_picking.date_done" t-options="{'widget': 'date'}"/>

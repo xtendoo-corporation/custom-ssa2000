@@ -10,7 +10,6 @@
     "data": [
         "views/res_company_views.xml",
         "views/stock_picking_views.xml",
-        "reports/report_styles.xml",
         "reports/stock_picking_report_templates.xml",
         "reports/invoice_report_templates.xml",
     ],

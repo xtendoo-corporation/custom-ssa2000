@@ -1,44 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_delivery_document_ssa2000" inherit_id="stock.report_delivery_document">
-        <xpath expr="//h2" position="before">
-            <t t-call="ssa2000_document_format.ssa_document_styles"/>
-            <t t-call="ssa2000_document_format.ssa_document_header">
-                <t t-set="company" t-value="o.company_id"/>
-                <t t-set="doc_date" t-value="o.date_done or o.scheduled_date"/>
-                <t t-set="partner_ref" t-value="o.partner_id.commercial_partner_id.ref"/>
-            </t>
-        </xpath>
-
-        <!-- Origen de la mercancía y transporte -->
-        <xpath expr="//div[hasclass('oe_structure')][1]" position="after">
-            <div class="ssa-origin-box" t-if="o._ssa_has_origin_info()">
-                <dl class="row mb-0">
-                    <t t-if="o.ssa_origin_supplier_id">
-                        <dt class="col-3">Proveedor origen</dt>
-                        <dd class="col-9"><span t-field="o.ssa_origin_supplier_id"/></dd>
-                    </t>
-                    <t t-if="o.ssa_origin_farm">
-                        <dt class="col-3">Desde la finca</dt>
-                        <dd class="col-9"><span t-field="o.ssa_origin_farm"/></dd>
-                    </t>
-                    <t t-if="o.ssa_carrier_name">
-                        <dt class="col-3">Transportista</dt>
-                        <dd class="col-9"><span t-field="o.ssa_carrier_name"/></dd>
-                    </t>
-                    <t t-if="o.ssa_vehicle_plate">
-                        <dt class="col-3">Matrícula</dt>
-                        <dd class="col-9"><span t-field="o.ssa_vehicle_plate"/></dd>
-                    </t>
-                    <t t-if="o.ssa_trip_number">
-                        <dt class="col-3">Núm. viaje</dt>
-                        <dd class="col-9"><span t-field="o.ssa_trip_number"/></dd>
-                    </t>
-                    <t t-if="o.ssa_origin_lot">
-                        <dt class="col-3">Lote de origen</dt>
-                        <dd class="col-9"><span t-field="o.ssa_origin_lot"/></dd>
-                    </t>
-                </dl>
+        <xpath expr="//div[@id='informations']" position="inside">
+            <div t-if="o.company_id.ssa_registry_code" class="col col-3 mw-100 mb-2" name="ssa_registry">
+                <strong>Registro Junta de Andalucía</strong>
+                <div class="m-0" t-out="o.company_id.ssa_registry_code"/>
+            </div>
+            <div t-if="o.partner_id.commercial_partner_id.ref" class="col col-3 mw-100 mb-2" name="ssa_partner_ref">
+                <strong>Cód. cliente</strong>
+                <div class="m-0" t-out="o.partner_id.commercial_partner_id.ref"/>
+            </div>
+            <div t-if="o.ssa_origin_supplier_id.display_name" class="col col-3 mw-100 mb-2" name="ssa_origin_supplier">
+                <strong>Proveedor origen mercancía</strong>
+                <div class="m-0" t-out="o.ssa_origin_supplier_id.display_name"/>
+            </div>
+            <div t-if="o.ssa_origin_farm" class="col col-3 mw-100 mb-2" name="ssa_origin_farm">
+                <strong>Desde la finca</strong>
+                <div class="m-0" t-out="o.ssa_origin_farm"/>
+            </div>
+            <div t-if="o.ssa_carrier_name" class="col col-3 mw-100 mb-2" name="ssa_carrier">
+                <strong>Transportista</strong>
+                <div class="m-0" t-out="o.ssa_carrier_name"/>
+            </div>
+            <div t-if="o.ssa_vehicle_plate" class="col col-3 mw-100 mb-2" name="ssa_plate">
+                <strong>Matrícula</strong>
+                <div class="m-0" t-out="o.ssa_vehicle_plate"/>
+            </div>
+            <div t-if="o.ssa_trip_number" class="col col-3 mw-100 mb-2" name="ssa_trip">
+                <strong>Núm. viaje</strong>
+                <div class="m-0" t-out="o.ssa_trip_number"/>
+            </div>
+            <div t-if="o.ssa_origin_lot" class="col col-3 mw-100 mb-2" name="ssa_lot">
+                <strong>Lote de origen</strong>
+                <div class="m-0" t-out="o.ssa_origin_lot"/>
             </div>
         </xpath>
 
