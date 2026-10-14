@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_ssa2000" model="ir.ui.view">
+        <field name="name">stock.picking.form.ssa2000</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='move_ids']/list/field[@name='quantity']" position="after">
+                <field name="ssa_gross_weight" optional="hide"/>
+                <field name="ssa_tare_weight" optional="hide"/>
+                <field name="ssa_net_weight" optional="hide"/>
+            </xpath>
+            <xpath expr="//page[@name='operations']" position="after">
+                <page string="Origen y transporte" name="ssa_transport">
+                    <group>
+                        <group name="ssa_origin">
+                            <field name="ssa_origin_supplier_id"/>
+                            <field name="ssa_origin_farm"/>
+                            <field name="ssa_origin_lot"/>
+                        </group>
+                        <group name="ssa_carrier">
+                            <field name="ssa_carrier_name"/>
+                            <field name="ssa_vehicle_plate"/>
+                            <field name="ssa_trip_number"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

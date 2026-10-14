@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Cabecera común de albarán y factura: registro, código de cliente y fecha -->
+    <template id="ssa_document_header">
+        <div class="row mb-3 ssa-doc-header">
+            <div class="col-8">
+                <div class="d-flex gap-2 flex-wrap">
+                    <div class="ssa-chip" t-if="doc_date">
+                        <span class="ssa-chip-label">Fecha</span>
+                        <strong t-out="doc_date" t-options="{'widget': 'date'}"/>
+                    </div>
+                    <div class="ssa-chip" t-if="partner_ref">
+                        <span class="ssa-chip-label">Cód. cliente</span>
+                        <strong t-out="partner_ref"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 text-end" t-if="company.ssa_registry_code">
+                <div class="ssa-chip ssa-chip-registry d-inline-block text-center">
+                    <span class="ssa-chip-label">Registro Junta de Andalucía</span>
+                    <strong t-out="company.ssa_registry_code"/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="ssa_document_styles">
+        <style name="ssa_document_styles">
+            .ssa-chip { border: 1px solid #dee2e6; border-radius: .5rem; padding: .25rem .75rem; background: #f8f9fa; }
+            .ssa-chip-label { display: block; font-size: .7rem; text-transform: uppercase; letter-spacing: .04em; color: #6c757d; }
+            .ssa-chip-registry { border-color: #adb5bd; }
+            .ssa-origin-box { border: 1px solid #dee2e6; border-radius: .5rem; padding: .5rem .75rem; margin-bottom: 1rem; }
+            .ssa-origin-box dt { font-weight: 600; color: #6c757d; font-size: .8rem; }
+            .ssa-origin-box dd { margin-bottom: .25rem; }
+            .ssa-picking-ref { font-weight: 600; font-size: .85em; }
+            .ssa-notes { border: 1px solid #dee2e6; border-radius: .5rem; padding: .5rem .75rem; }
+        </style>
+    </template>
+</odoo>

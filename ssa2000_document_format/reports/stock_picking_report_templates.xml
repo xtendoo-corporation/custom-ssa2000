@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_delivery_document_ssa2000" inherit_id="stock.report_delivery_document">
+        <xpath expr="//h2" position="before">
+            <t t-call="ssa2000_document_format.ssa_document_styles"/>
+            <t t-call="ssa2000_document_format.ssa_document_header">
+                <t t-set="company" t-value="o.company_id"/>
+                <t t-set="doc_date" t-value="o.date_done or o.scheduled_date"/>
+                <t t-set="partner_ref" t-value="o.partner_id.commercial_partner_id.ref"/>
+            </t>
+        </xpath>
+
+        <!-- Origen de la mercancía y transporte -->
+        <xpath expr="//div[hasclass('oe_structure')][1]" position="after">
+            <div class="ssa-origin-box" t-if="o._ssa_has_origin_info()">
+                <dl class="row mb-0">
+                    <t t-if="o.ssa_origin_supplier_id">
+                        <dt class="col-3">Proveedor origen</dt>
+                        <dd class="col-9"><span t-field="o.ssa_origin_supplier_id"/></dd>
+                    </t>
+                    <t t-if="o.ssa_origin_farm">
+                        <dt class="col-3">Desde la finca</dt>
+                        <dd class="col-9"><span t-field="o.ssa_origin_farm"/></dd>
+                    </t>
+                    <t t-if="o.ssa_carrier_name">
+                        <dt class="col-3">Transportista</dt>
+                        <dd class="col-9"><span t-field="o.ssa_carrier_name"/></dd>
+                    </t>
+                    <t t-if="o.ssa_vehicle_plate">
+                        <dt class="col-3">Matrícula</dt>
+                        <dd class="col-9"><span t-field="o.ssa_vehicle_plate"/></dd>
+                    </t>
+                    <t t-if="o.ssa_trip_number">
+                        <dt class="col-3">Núm. viaje</dt>
+                        <dd class="col-9"><span t-field="o.ssa_trip_number"/></dd>
+                    </t>
+                    <t t-if="o.ssa_origin_lot">
+                        <dt class="col-3">Lote de origen</dt>
+                        <dd class="col-9"><span t-field="o.ssa_origin_lot"/></dd>
+                    </t>
+                </dl>
+            </div>
+        </xpath>
+
+        <!-- Tabla propia: pesaje, precio e importe por movimiento -->
+        <xpath expr="//table[@name='stock_move_table']" position="replace">
+            <t t-set="ssa_moves" t-value="o.move_ids.filtered(lambda m: m.quantity or m.product_uom_qty)"/>
+            <t t-set="ssa_has_weights" t-value="any(m.ssa_gross_weight or m.ssa_tare_weight for m in ssa_moves)"/>
+            <t t-set="ssa_has_prices" t-value="any(m.sale_line_id for m in ssa_moves)"/>
+            <t t-set="ssa_has_lots" t-value="any(ssa_moves.move_line_ids.lot_id)"/>
+            <table class="table table-sm o_main_table" name="ssa_move_table" t-if="True">
+                <thead>
+                    <tr>
+                        <th name="th_ssa_code">Código</th>
+                        <th name="th_ssa_product">Descripción</th>
+                        <th name="th_ssa_lot" t-if="ssa_has_lots">Lote</th>
+                        <th name="th_ssa_gross" class="text-end" t-if="ssa_has_weights">Tn. bruto</th>
+                        <th name="th_ssa_tare" class="text-end" t-if="ssa_has_weights">Tn. tara</th>
+                        <th name="th_ssa_qty" class="text-end">
+                            <t t-if="ssa_has_weights">Tn. neto</t>
+                            <t t-else="">Cantidad</t>
+                        </th>
+                        <th name="th_ssa_price" class="text-end" t-if="ssa_has_prices">Precio</th>
+                        <th name="th_ssa_amount" class="text-end" t-if="ssa_has_prices">Importe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="ssa_moves" t-as="move">
+                        <td><span t-field="move.product_id.default_code"/></td>
+                        <td>
+                            <span t-out="move.description_picking or move.product_id.name"
+                                  t-options="{'widget': 'text'}"/>
+                        </td>
+                        <td t-if="ssa_has_lots"><span t-out="', '.join(move.move_line_ids.lot_id.mapped('name'))"/></td>
+                        <t t-if="ssa_has_weights">
+                            <td class="text-end"><span t-field="move.ssa_gross_weight"/></td>
+                            <td class="text-end"><span t-field="move.ssa_tare_weight"/></td>
+                        </t>
+                        <td class="text-end">
+                            <t t-if="ssa_has_weights"><span t-field="move.ssa_net_weight"/></t>
+                            <t t-else="">
+                                <span t-field="move.quantity"/>
+                                <span t-field="move.product_uom" groups="uom.group_uom"/>
+                            </t>
+                        </td>
+                        <t t-if="ssa_has_prices">
+                            <td class="text-end"><span t-if="move.sale_line_id" t-field="move.ssa_price_unit"/></td>
+                            <td class="text-end"><span t-if="move.sale_line_id" t-field="move.ssa_price_subtotal"/></td>
+                        </t>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+    </template>
+
+    <!-- Total del albarán -->
+    <template id="report_delivery_document_totals_ssa2000" inherit_id="stock.report_delivery_document"
+              priority="20">
+        <xpath expr="//table[@name='ssa_move_table']" position="after">
+            <div class="row" t-if="o.move_ids.filtered('sale_line_id')">
+                <div class="col-5 ms-auto">
+                    <t t-set="ssa_currency" t-value="o.move_ids.filtered('sale_line_id')[:1].ssa_currency_id"/>
+                    <table class="table table-sm">
+                        <tr class="border-black o_total">
+                            <td><strong>Total albarán</strong></td>
+                            <td class="text-end">
+                                <strong t-out="sum(o.move_ids.mapped('ssa_price_subtotal'))"
+                                        t-options="{'widget': 'monetary', 'display_currency': ssa_currency}"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="text-muted small text-end">IVA no incluido</div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>
