@@ -2,47 +2,54 @@
 <odoo>
     <template id="report_delivery_document_ssa2000" inherit_id="stock.report_delivery_document">
         <xpath expr="//div[@id='informations']" position="inside">
-            <div t-if="o.company_id.ssa_registry_code" class="col col-3 mw-100 mb-2" name="ssa_registry">
+            <div t-if="o.company_id.ssa_registry_code" class="col-auto me-4 mb-2" name="ssa_registry">
                 <strong>Registro Junta de Andalucía</strong>
                 <div class="m-0" t-out="o.company_id.ssa_registry_code"/>
             </div>
-            <div t-if="o.partner_id.commercial_partner_id.ref" class="col col-3 mw-100 mb-2" name="ssa_partner_ref">
+            <div t-if="o.partner_id.commercial_partner_id.ref" class="col-auto me-4 mb-2" name="ssa_partner_ref">
                 <strong>Cód. cliente</strong>
                 <div class="m-0" t-out="o.partner_id.commercial_partner_id.ref"/>
             </div>
-            <div t-if="o.ssa_origin_supplier_id.display_name" class="col col-3 mw-100 mb-2" name="ssa_origin_supplier">
+            <div t-if="o.ssa_origin_supplier_id.display_name" class="col-auto me-4 mb-2" name="ssa_origin_supplier">
                 <strong>Proveedor origen mercancía</strong>
                 <div class="m-0" t-out="o.ssa_origin_supplier_id.display_name"/>
             </div>
-            <div t-if="o.ssa_origin_farm" class="col col-3 mw-100 mb-2" name="ssa_origin_farm">
+            <div t-if="o.ssa_origin_farm" class="col-auto me-4 mb-2" name="ssa_origin_farm">
                 <strong>Desde la finca</strong>
                 <div class="m-0" t-out="o.ssa_origin_farm"/>
             </div>
-            <div t-if="o.ssa_carrier_name" class="col col-3 mw-100 mb-2" name="ssa_carrier">
+            <div t-if="o.ssa_carrier_name" class="col-auto me-4 mb-2" name="ssa_carrier">
                 <strong>Transportista</strong>
                 <div class="m-0" t-out="o.ssa_carrier_name"/>
             </div>
-            <div t-if="o.ssa_vehicle_plate" class="col col-3 mw-100 mb-2" name="ssa_plate">
+            <div t-if="o.ssa_vehicle_plate" class="col-auto me-4 mb-2" name="ssa_plate">
                 <strong>Matrícula</strong>
                 <div class="m-0" t-out="o.ssa_vehicle_plate"/>
             </div>
-            <div t-if="o.ssa_trip_number" class="col col-3 mw-100 mb-2" name="ssa_trip">
+            <div t-if="o.ssa_trip_number" class="col-auto me-4 mb-2" name="ssa_trip">
                 <strong>Núm. viaje</strong>
                 <div class="m-0" t-out="o.ssa_trip_number"/>
             </div>
-            <div t-if="o.ssa_origin_lot" class="col col-3 mw-100 mb-2" name="ssa_lot">
+            <div t-if="o.ssa_origin_lot" class="col-auto me-4 mb-2" name="ssa_lot">
                 <strong>Lote de origen</strong>
                 <div class="m-0" t-out="o.ssa_origin_lot"/>
             </div>
         </xpath>
 
         <!-- Tabla propia: pesaje, precio e importe por movimiento -->
-        <xpath expr="//table[@name='stock_move_table']" position="replace">
+        <!-- Se desactivan las dos tablas estándar y se pinta una propia -->
+        <xpath expr="//table[@name='stock_move_table']" position="attributes">
+            <attribute name="t-if">False</attribute>
+        </xpath>
+        <xpath expr="//table[@name='stock_move_line_table']" position="attributes">
+            <attribute name="t-elif">False</attribute>
+        </xpath>
+        <xpath expr="//table[@name='stock_move_line_table']" position="after">
             <t t-set="ssa_moves" t-value="o.move_ids.filtered(lambda m: m.quantity or m.product_uom_qty)"/>
             <t t-set="ssa_has_weights" t-value="any(m.ssa_gross_weight or m.ssa_tare_weight for m in ssa_moves)"/>
             <t t-set="ssa_has_prices" t-value="any(m.sale_line_id for m in ssa_moves)"/>
             <t t-set="ssa_has_lots" t-value="any(ssa_moves.move_line_ids.lot_id)"/>
-            <table class="table table-sm o_main_table" name="ssa_move_table" t-if="True">
+            <table class="table table-sm o_main_table" name="ssa_move_table">
                 <thead>
                     <tr>
                         <th name="th_ssa_code">Código</th>
@@ -73,7 +80,7 @@
                         <td class="text-end">
                             <t t-if="ssa_has_weights"><span t-field="move.ssa_net_weight"/></t>
                             <t t-else="">
-                                <span t-field="move.quantity"/>
+                                <span t-out="move.quantity or move.product_uom_qty"/>
                                 <span t-field="move.product_uom" groups="uom.group_uom"/>
                             </t>
                         </td>
