@@ -79,32 +79,32 @@
             <table class="table table-sm o_main_table" name="ssa_move_table">
                 <thead>
                     <tr>
-                        <th name="th_ssa_code">Código</th>
-                        <th name="th_ssa_product">Descripción</th>
-                        <th name="th_ssa_lot" t-if="ssa_has_lots">Lote</th>
-                        <th name="th_ssa_gross" class="text-end" t-if="ssa_has_weights">Tn. bruto</th>
-                        <th name="th_ssa_tare" class="text-end" t-if="ssa_has_weights">Tn. tara</th>
-                        <th name="th_ssa_qty" class="text-end">
+                        <th name="th_ssa_code" class="px-2">Código</th>
+                        <th name="th_ssa_product" class="px-2">Descripción</th>
+                        <th name="th_ssa_lot" t-if="ssa_has_lots" class="px-2">Lote</th>
+                        <th name="th_ssa_gross" class="px-2 text-end" t-if="ssa_has_weights">Tn. bruto</th>
+                        <th name="th_ssa_tare" class="px-2 text-end" t-if="ssa_has_weights">Tn. tara</th>
+                        <th name="th_ssa_qty" class="px-2 text-end">
                             <t t-if="ssa_has_weights">Tn. neto</t>
                             <t t-else="">Cantidad</t>
                         </th>
-                        <th name="th_ssa_price" class="text-end" t-if="ssa_has_prices">Precio</th>
-                        <th name="th_ssa_amount" class="text-end" t-if="ssa_has_prices">Importe</th>
+                        <th name="th_ssa_price" class="px-2 text-end" t-if="ssa_has_prices">Precio</th>
+                        <th name="th_ssa_amount" class="px-2 text-end" t-if="ssa_has_prices">Importe</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr t-foreach="ssa_moves" t-as="move">
-                        <td><span t-field="move.product_id.default_code"/></td>
-                        <td>
+                        <td class="px-2"><span t-field="move.product_id.default_code"/></td>
+                        <td class="px-2">
                             <span t-out="move.description_picking or move.product_id.name"
                                   t-options="{'widget': 'text'}"/>
                         </td>
-                        <td t-if="ssa_has_lots"><span t-out="', '.join(move.move_line_ids.lot_id.mapped('name'))"/></td>
+                        <td t-if="ssa_has_lots" class="px-2"><span t-out="', '.join(move.move_line_ids.lot_id.mapped('name'))"/></td>
                         <t t-if="ssa_has_weights">
-                            <td class="text-end"><span t-field="move.ssa_gross_weight"/></td>
-                            <td class="text-end"><span t-field="move.ssa_tare_weight"/></td>
+                            <td class="px-2 text-end"><span t-field="move.ssa_gross_weight"/></td>
+                            <td class="px-2 text-end"><span t-field="move.ssa_tare_weight"/></td>
                         </t>
-                        <td class="text-end">
+                        <td class="px-2 text-end">
                             <t t-if="ssa_has_weights"><span t-field="move.ssa_net_weight"/></t>
                             <t t-else="">
                                 <span t-out="move.quantity or move.product_uom_qty"/>
@@ -112,8 +112,8 @@
                             </t>
                         </td>
                         <t t-if="ssa_has_prices">
-                            <td class="text-end"><span t-if="move.sale_line_id" t-field="move.ssa_price_unit"/></td>
-                            <td class="text-end"><span t-if="move.sale_line_id" t-field="move.ssa_price_subtotal"/></td>
+                            <td class="px-2 text-end"><span t-if="move.sale_line_id" t-field="move.ssa_price_unit"/></td>
+                            <td class="px-2 text-end"><span t-if="move.sale_line_id" t-field="move.ssa_price_subtotal"/></td>
                         </t>
                     </tr>
                 </tbody>
