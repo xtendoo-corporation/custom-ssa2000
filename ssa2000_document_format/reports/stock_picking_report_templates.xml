@@ -12,6 +12,14 @@
             </div>
         </xpath>
 
+        <!-- Separa las direcciones de la cabecera de la empresa (mismo margen en ambas columnas) -->
+        <xpath expr="//div[@name='div_outgoing_address']" position="attributes">
+            <attribute name="class" add="pt-4" separator=" "/>
+        </xpath>
+        <xpath expr="//div[@name='div_incoming_address']" position="attributes">
+            <attribute name="class" add="pt-4" separator=" "/>
+        </xpath>
+
         <!-- Origen y transporte: dos filas de tres columnas (wkhtmltopdf no soporta flex-wrap) -->
         <xpath expr="//div[@id='informations']" position="after">
             <div class="row mb-2" name="ssa_origin_transport_1" t-if="o.ssa_origin_supplier_id.display_name or o.ssa_origin_farm or o.ssa_origin_lot">
