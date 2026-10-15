@@ -12,32 +12,46 @@
             </div>
         </xpath>
 
-        <!-- Origen y transporte en tres columnas a todo el ancho -->
+        <!-- Origen y transporte: dos filas de tres columnas (wkhtmltopdf no soporta flex-wrap) -->
         <xpath expr="//div[@id='informations']" position="after">
-            <div class="row mb-2" name="ssa_origin_transport" t-if="o._ssa_has_origin_info()">
-                <div t-if="o.ssa_origin_supplier_id.display_name" class="col-4 mb-2" name="ssa_origin_supplier">
-                    <strong>Proveedor origen mercancía</strong>
-                    <div class="m-0" t-out="o.ssa_origin_supplier_id.display_name"/>
+            <div class="row mb-2" name="ssa_origin_transport_1" t-if="o.ssa_origin_supplier_id.display_name or o.ssa_origin_farm or o.ssa_origin_lot">
+                <div class="col-4" name="ssa_origin_supplier">
+                    <t t-if="o.ssa_origin_supplier_id.display_name">
+                        <strong>Proveedor origen mercancía</strong>
+                        <div class="m-0" t-out="o.ssa_origin_supplier_id.display_name"/>
+                    </t>
                 </div>
-                <div t-if="o.ssa_origin_farm" class="col-4 mb-2" name="ssa_origin_farm">
-                    <strong>Desde la finca</strong>
-                    <div class="m-0" t-out="o.ssa_origin_farm"/>
+                <div class="col-4" name="ssa_origin_farm">
+                    <t t-if="o.ssa_origin_farm">
+                        <strong>Desde la finca</strong>
+                        <div class="m-0" t-out="o.ssa_origin_farm"/>
+                    </t>
                 </div>
-                <div t-if="o.ssa_origin_lot" class="col-4 mb-2" name="ssa_lot">
-                    <strong>Lote de origen</strong>
-                    <div class="m-0" t-out="o.ssa_origin_lot"/>
+                <div class="col-4" name="ssa_lot">
+                    <t t-if="o.ssa_origin_lot">
+                        <strong>Lote de origen</strong>
+                        <div class="m-0" t-out="o.ssa_origin_lot"/>
+                    </t>
                 </div>
-                <div t-if="o.ssa_carrier_name" class="col-4 mb-2" name="ssa_carrier">
-                    <strong>Transportista</strong>
-                    <div class="m-0" t-out="o.ssa_carrier_name"/>
+            </div>
+            <div class="row mb-2" name="ssa_origin_transport_2" t-if="o.ssa_carrier_name or o.ssa_vehicle_plate or o.ssa_trip_number">
+                <div class="col-4" name="ssa_carrier">
+                    <t t-if="o.ssa_carrier_name">
+                        <strong>Transportista</strong>
+                        <div class="m-0" t-out="o.ssa_carrier_name"/>
+                    </t>
                 </div>
-                <div t-if="o.ssa_vehicle_plate" class="col-4 mb-2" name="ssa_plate">
-                    <strong>Matrícula</strong>
-                    <div class="m-0" t-out="o.ssa_vehicle_plate"/>
+                <div class="col-4" name="ssa_plate">
+                    <t t-if="o.ssa_vehicle_plate">
+                        <strong>Matrícula</strong>
+                        <div class="m-0" t-out="o.ssa_vehicle_plate"/>
+                    </t>
                 </div>
-                <div t-if="o.ssa_trip_number" class="col-4 mb-2" name="ssa_trip">
-                    <strong>Núm. viaje</strong>
-                    <div class="m-0" t-out="o.ssa_trip_number"/>
+                <div class="col-4" name="ssa_trip">
+                    <t t-if="o.ssa_trip_number">
+                        <strong>Núm. viaje</strong>
+                        <div class="m-0" t-out="o.ssa_trip_number"/>
+                    </t>
                 </div>
             </div>
         </xpath>
