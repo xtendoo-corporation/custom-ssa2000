@@ -7,6 +7,10 @@
                 <strong>Registro Junta de Andalucía</strong>
                 <div t-out="o.company_id.ssa_registry_code"/>
             </div>
+            <div class="col" t-if="o.partner_id.commercial_partner_id.ref" name="ssa_partner_ref">
+                <strong>Cód. cliente</strong>
+                <div t-out="o.partner_id.commercial_partner_id.ref"/>
+            </div>
         </xpath>
 
         <!-- Albarán(es) de origen sobre la descripción de cada línea -->
@@ -18,6 +22,15 @@
                     de fecha <span t-out="ssa_picking.date_done" t-options="{'widget': 'date'}"/>
                     <t t-if="not ssa_picking_last">·</t>
                 </t>
+            </div>
+            <t t-set="ssa_w" t-value="line._ssa_get_weights()"/>
+            <div t-if="ssa_w['has_weights']">
+                Tn. bruto <span t-out="ssa_w['gross']" t-options="{'widget': 'float', 'precision': 3}"/>
+                · Tn. tara <span t-out="ssa_w['tare']" t-options="{'widget': 'float', 'precision': 3}"/>
+                · Tn. neto <span t-out="ssa_w['net']" t-options="{'widget': 'float', 'precision': 3}"/>
+            </div>
+            <div t-if="ssa_w['lots']">
+                Lote: <span t-out="', '.join(ssa_w['lots'])"/>
             </div>
         </xpath>
     </template>

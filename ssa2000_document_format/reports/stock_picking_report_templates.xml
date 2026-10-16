@@ -107,7 +107,7 @@
                         <td class="px-2 text-end">
                             <t t-if="ssa_has_weights"><span t-field="move.ssa_net_weight"/></t>
                             <t t-else="">
-                                <span t-out="move.quantity or move.product_uom_qty"/>
+                                <span t-out="move.quantity or move.product_uom_qty" t-options="{'widget': 'float', 'precision': 2}"/>
                                 <span t-field="move.product_uom" groups="uom.group_uom"/>
                             </t>
                         </td>
@@ -139,6 +139,10 @@
                     </table>
                     <div class="text-muted small text-end">IVA no incluido</div>
                 </div>
+            </div>
+            <div t-if="not is_html_empty(o.note)" name="ssa_observations" class="mb-3">
+                <strong>Observaciones:</strong>
+                <span t-field="o.note"/>
             </div>
         </xpath>
     </template>
