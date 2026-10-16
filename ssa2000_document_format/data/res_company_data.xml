@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="base.main_company" model="res.company">
+        <field name="ssa_delivery_footer"><![CDATA[<p>* La posesión del presente albarán no presupone el pago de la mercancía. Su pago se acredita por abono bancario o por recibo de caja.</p><p>** Inscrita en el registro Mercantil de Sevilla con fecha 3 de Marzo de 1997 folio 71 del tomo 2477 de SOC, Hoja SE-28949</p>]]></field>
+    </record>
+</odoo>

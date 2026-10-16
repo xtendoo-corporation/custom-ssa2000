@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- En albaranes se imprime el pie específico de albarán si está informado -->
+    <template id="external_layout_standard_ssa2000" inherit_id="web.external_layout_standard">
+        <xpath expr="//div[hasclass('o_footer_content')]/div[@t-field='company.report_footer']" position="replace">
+            <div t-if="o and o._name == 'stock.picking' and not is_html_empty(company.ssa_delivery_footer)"
+                 class="flex-grow-1 text-start me-2" t-field="company.ssa_delivery_footer"/>
+            <div t-else="" class="flex-grow-1 text-start me-2" t-field="company.report_footer"/>
+        </xpath>
+    </template>
+</odoo>

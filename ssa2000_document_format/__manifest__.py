@@ -8,10 +8,13 @@
     "license": "AGPL-3",
     "depends": ["sale_stock", "account"],
     "data": [
+        "data/res_company_data.xml",
         "views/res_company_views.xml",
         "views/stock_picking_views.xml",
         "reports/stock_picking_report_templates.xml",
         "reports/invoice_report_templates.xml",
+        "reports/self_billing_report.xml",
+        "reports/report_layout.xml",
     ],
     "installable": True,
     "auto_install": False,
