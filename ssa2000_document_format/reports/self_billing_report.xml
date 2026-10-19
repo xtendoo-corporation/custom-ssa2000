@@ -20,7 +20,7 @@
                     <t t-set="ssa_currency" t-value="o.currency_id"/>
                     <t t-set="ssa_lines" t-value="o.invoice_line_ids.filtered(lambda l: l.display_type == 'product')"/>
                     <t t-set="ssa_withholding" t-value="o.line_ids.filtered(lambda l: l.tax_line_id and l.tax_line_id.amount &lt; 0)"/>
-                    <div class="page">
+                    <div class="page pt-5">
                         <div class="row mb-4">
                             <div class="col-6">
                                 <strong>CLIENTE</strong>
