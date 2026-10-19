@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- En albaranes se imprime el pie específico de albarán si está informado -->
+    <!-- En albaranes se imprime el pie específico de albarán (el de la compañía habla de "factura") -->
     <template id="external_layout_standard_ssa2000" inherit_id="web.external_layout_standard">
         <xpath expr="//div[hasclass('o_footer_content')]/div[@t-field='company.report_footer']" position="replace">
-            <div t-if="o and o._name == 'stock.picking' and not is_html_empty(company.ssa_delivery_footer)"
-                 class="flex-grow-1 text-start me-2" t-field="company.ssa_delivery_footer"/>
+            <t t-if="o and o._name == 'stock.picking'">
+                <div t-if="not is_html_empty(company.ssa_delivery_footer)"
+                     class="flex-grow-1 text-start me-2" t-field="company.ssa_delivery_footer"/>
+                <div t-else="" class="flex-grow-1 text-start me-2">
+                    <p>* La posesión del presente albarán no presupone el pago de la mercancía. Su pago se acredita por abono bancario o por recibo de caja.</p>
+                    <p>** Inscrita en el registro Mercantil de Sevilla con fecha 3 de Marzo de 1997 folio 71 del tomo 2477 de SOC, Hoja SE-28949</p>
+                </div>
+            </t>
             <div t-else="" class="flex-grow-1 text-start me-2" t-field="company.report_footer"/>
         </xpath>
     </template>
