@@ -7,8 +7,6 @@
         <field name="arch" type="xml">
             <field name="company_registry" position="after">
                 <field name="ssa_registry_code"/>
-            </field>
-            <field name="report_footer" position="after">
                 <field name="ssa_delivery_footer"/>
             </field>
         </field>
