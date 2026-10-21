@@ -40,6 +40,12 @@
                                 <strong>CLIENTE</strong>
                                 <div t-out="o.company_id.name"/>
                                 <div t-if="o.company_id.vat" t-out="o.company_id.vat"/>
+                                <div t-if="o.company_id.street" t-out="o.company_id.street"/>
+                                <div t-if="o.company_id.street2" t-out="o.company_id.street2"/>
+                                <div>
+                                    <span t-out="o.company_id.zip"/> <span t-out="o.company_id.city"/>
+                                </div>
+                                <div t-if="o.company_id.state_id" t-out="o.company_id.state_id.name"/>
                             </div>
                         </div>
                         <h2>
