@@ -1,9 +1,10 @@
-from odoo import models
+from odoo import api, models
 
 
 class AccountTax(models.Model):
     _inherit = "account.tax"
 
+    @api.model
     def _ssa_create_irpf_base_iva_tax(self):
         """Crea, copiando el "2% WHI" de cada compañía, la retención del 2% sobre base + IVA 12%.
 

@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class ResCompany(models.Model):
@@ -13,6 +13,7 @@ class ResCompany(models.Model):
         help="Pie que se imprime en los albaranes en lugar del pie general de la compañía.",
     )
 
+    @api.model
     def _ssa_set_default_registry_code(self):
         """Registro de productores y distribuidores de la compañía principal, si no está informado."""
         company = self.env.ref("base.main_company", raise_if_not_found=False)
