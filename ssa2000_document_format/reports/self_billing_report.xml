@@ -23,7 +23,7 @@
                     <div class="page pt-5">
                         <div class="row mb-4">
                             <div class="col-6">
-                                <strong>CLIENTE</strong>
+                                <strong>PROVEEDOR</strong>
                                 <div t-out="o.partner_id.display_name"/>
                                 <div t-if="o.partner_id.vat" t-out="o.partner_id.vat"/>
                                 <div t-out="o.partner_id.street"/>
@@ -33,8 +33,13 @@
                                 <div t-if="o.partner_id.state_id" t-out="o.partner_id.state_id.name"/>
                             </div>
                             <div class="col-3" t-if="o.partner_id.ref">
-                                <strong>Cód. cliente</strong>
+                                <strong>Cód. proveedor</strong>
                                 <div t-out="o.partner_id.ref"/>
+                            </div>
+                            <div class="col-3">
+                                <strong>CLIENTE</strong>
+                                <div t-out="o.company_id.name"/>
+                                <div t-if="o.company_id.vat" t-out="o.company_id.vat"/>
                             </div>
                         </div>
                         <h2>
@@ -89,8 +94,15 @@
                                         <td>I.V.A. <span t-out="vat_line.tax_line_id.amount" t-options="{'widget': 'float', 'precision': 2}"/>%</td>
                                         <td class="text-end"><span t-out="abs(vat_line.balance)" t-options="{'widget': 'monetary', 'display_currency': ssa_currency}"/></td>
                                     </tr>
+                                    <t t-set="ssa_vat_rate" t-value="sum(o.line_ids.filtered(lambda l: l.tax_line_id and l.tax_line_id.amount &gt; 0).mapped('tax_line_id.amount'))"/>
                                     <tr t-foreach="ssa_withholding" t-as="wh_line">
-                                        <td>I.R.P.F. <span t-out="abs(wh_line.tax_line_id.amount)" t-options="{'widget': 'float', 'precision': 2}"/>%</td>
+                                        <t t-set="ssa_on_vat" t-value="'IVA' in wh_line.tax_line_id.name"/>
+                                        <td>
+                                            I.R.P.F.
+                                            <span t-out="abs(wh_line.tax_line_id.amount) / (1 + ssa_vat_rate / 100.0) if ssa_on_vat else abs(wh_line.tax_line_id.amount)"
+                                                  t-options="{'widget': 'float', 'precision': 2}"/>%
+                                            <small t-if="ssa_on_vat" class="text-muted">(s/ base + IVA)</small>
+                                        </td>
                                         <td class="text-end">-<span t-out="abs(wh_line.balance)" t-options="{'widget': 'monetary', 'display_currency': ssa_currency}"/></td>
                                     </tr>
                                     <tr class="border-black o_total">

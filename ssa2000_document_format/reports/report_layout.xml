@@ -3,7 +3,10 @@
     <!-- En albaranes se imprime el pie específico de albarán (el de la compañía habla de "factura") -->
     <template id="external_layout_standard_ssa2000" inherit_id="web.external_layout_standard">
         <xpath expr="//div[hasclass('o_footer_content')]/div[@t-field='company.report_footer']" position="replace">
-            <t t-if="o and o._name == 'stock.picking'">
+            <!-- Autofactura: las observaciones de pie son solo para ventas -->
+            <div t-if="o and o._name == 'account.move' and o.move_type in ('in_invoice', 'in_refund')"
+                 class="flex-grow-1 me-2"/>
+            <t t-elif="o and o._name == 'stock.picking'">
                 <div t-if="not is_html_empty(company.ssa_delivery_footer)"
                      class="flex-grow-1 text-start me-2" t-field="company.ssa_delivery_footer"/>
                 <div t-else="" class="flex-grow-1 text-start me-2">

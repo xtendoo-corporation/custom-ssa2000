@@ -8,6 +8,7 @@
     "license": "AGPL-3",
     "depends": ["sale_stock", "account"],
     "data": [
+        "data/res_company_data.xml",
         "views/res_company_views.xml",
         "views/stock_picking_views.xml",
         "reports/stock_picking_report_templates.xml",
