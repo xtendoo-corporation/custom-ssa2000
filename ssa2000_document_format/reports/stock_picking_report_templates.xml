@@ -2,10 +2,6 @@
 <odoo>
     <template id="report_delivery_document_ssa2000" inherit_id="stock.report_delivery_document">
         <xpath expr="//div[@id='informations']" position="inside">
-            <div t-if="o.company_id.ssa_registry_code" class="col col-3 mw-100 mb-2" name="ssa_registry">
-                <strong>Registro Junta de Andalucía</strong>
-                <div class="m-0" t-out="o.company_id.ssa_registry_code"/>
-            </div>
             <div t-if="o.partner_id.commercial_partner_id.ref" class="col col-3 mw-100 mb-2" name="ssa_partner_ref">
                 <strong>Cód. cliente</strong>
                 <div class="m-0" t-out="o.partner_id.commercial_partner_id.ref"/>

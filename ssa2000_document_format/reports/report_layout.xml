@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Registro de la Junta de Andalucía recuadrado arriba a la derecha (albaranes y facturas de venta) -->
+    <template id="external_layout_standard_registry_ssa2000" inherit_id="web.external_layout_standard">
+        <xpath expr="//div[hasclass('header')]/div[hasclass('justify-content-between')]" position="inside">
+            <div t-if="o and company.ssa_registry_code
+                       and (o._name == 'stock.picking' or (o._name == 'account.move' and o.move_type in ('out_invoice', 'out_refund')))"
+                 class="border border-dark px-3 py-1 text-center ms-auto" name="ssa_registry_box">
+                <div>Registro</div>
+                <div>Junta de Andalucía</div>
+                <strong t-out="company.ssa_registry_code"/>
+            </div>
+        </xpath>
+    </template>
+
     <!-- En albaranes se imprime el pie específico de albarán (el de la compañía habla de "factura") -->
     <template id="external_layout_standard_ssa2000" inherit_id="web.external_layout_standard">
         <xpath expr="//div[hasclass('o_footer_content')]/div[@t-field='company.report_footer']" position="replace">

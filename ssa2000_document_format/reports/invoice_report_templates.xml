@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_invoice_document_ssa2000" inherit_id="account.report_invoice_document">
-        <!-- Registro de la empresa junto al resto de datos de cabecera -->
-        <xpath expr="//div[@id='informations']" position="inside">
-            <div class="col" t-if="o.company_id.ssa_registry_code" name="ssa_registry">
-                <strong>Registro Junta de Andalucía</strong>
-                <div t-out="o.company_id.ssa_registry_code"/>
-            </div>
+        <!-- Tipos de IVA sin la etiqueta interna (4% B, 21% S...) -->
+        <xpath expr="//span[@id='line_tax_ids']" position="replace">
+            <span id="line_tax_ids" t-if="not hide_prices"
+                  t-out="', '.join('%s%%' % ('%g' % t.amount) for t in line.tax_ids) if all(t.amount_type == 'percent' for t in line.tax_ids) else taxes"/>
         </xpath>
 
         <!-- Albarán(es) de origen sobre la descripción de cada línea -->
