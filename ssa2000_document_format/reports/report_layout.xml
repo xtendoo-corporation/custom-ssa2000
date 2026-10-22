@@ -13,6 +13,13 @@
         </xpath>
     </template>
 
+    <!-- Autofactura: sin los datos de SSA arriba; figuran solo en el bloque CLIENTE -->
+    <template id="external_layout_standard_self_billing_ssa2000" inherit_id="web.external_layout_standard">
+        <xpath expr="//div[hasclass('justify-content-between')]/.." position="attributes">
+            <attribute name="t-if">not (o and o._name == 'account.move' and o.move_type in ('in_invoice', 'in_refund'))</attribute>
+        </xpath>
+    </template>
+
     <!-- En albaranes se imprime el pie específico de albarán (el de la compañía habla de "factura") -->
     <template id="external_layout_standard_ssa2000" inherit_id="web.external_layout_standard">
         <xpath expr="//div[hasclass('o_footer_content')]/div[@t-field='company.report_footer']" position="replace">
