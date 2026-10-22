@@ -28,3 +28,11 @@ class AccountMoveLine(models.Model):
             "net": gross - tare,
             "lots": list(dict.fromkeys(lots + origin_lots)),
         }
+
+    def _ssa_tax_percent_label(self):
+        """Porcentaje de los impuestos de la línea (4%) en lugar de la etiqueta interna (4% B)."""
+        self.ensure_one()
+        taxes = self.tax_ids
+        if taxes and all(tax.amount_type == "percent" for tax in taxes):
+            return ", ".join("%g%%" % tax.amount for tax in taxes)
+        return ", ".join(tax.tax_label for tax in taxes if tax.tax_label)

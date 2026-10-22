@@ -3,8 +3,7 @@
     <template id="report_invoice_document_ssa2000" inherit_id="account.report_invoice_document">
         <!-- Tipos de IVA sin la etiqueta interna (4% B, 21% S...) -->
         <xpath expr="//span[@id='line_tax_ids']" position="replace">
-            <span id="line_tax_ids" t-if="not hide_prices"
-                  t-out="', '.join('%s%%' % ('%g' % t.amount) for t in line.tax_ids) if all(t.amount_type == 'percent' for t in line.tax_ids) else taxes"/>
+            <span id="line_tax_ids" t-if="not hide_prices" t-out="line._ssa_tax_percent_label()"/>
         </xpath>
 
         <!-- Albarán(es) de origen sobre la descripción de cada línea -->
