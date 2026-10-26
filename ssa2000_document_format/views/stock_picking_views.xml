@@ -9,6 +9,7 @@
                 <field name="ssa_gross_weight" column_invisible="parent.ssa_weight_mode != 'gross_tare'"/>
                 <field name="ssa_tare_weight" column_invisible="parent.ssa_weight_mode != 'gross_tare'"/>
                 <field name="ssa_net_weight" column_invisible="parent.ssa_weight_mode != 'gross_tare'"/>
+                <field name="ssa_units"/>
             </xpath>
             <field name="origin" position="after">
                 <field name="ssa_weight_mode"/>

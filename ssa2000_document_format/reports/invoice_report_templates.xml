@@ -27,6 +27,61 @@
             </div>
         </xpath>
 
+        <!-- Columnas Tn. bruto / tara / neto y unidades (solo si alguna línea las tiene) -->
+        <xpath expr="//table[@name='invoice_line_table']" position="before">
+            <t t-set="ssa_cols" t-value="o.invoice_line_ids.filtered(lambda x: x.display_type == 'product')"/>
+            <t t-set="ssa_has_weights" t-value="any(x._ssa_get_weights()['has_weights'] for x in ssa_cols)"/>
+            <t t-set="ssa_has_units" t-value="any(x._ssa_get_weights()['units'] for x in ssa_cols)"/>
+        </xpath>
+        <xpath expr="//th[@name='th_description']" position="after">
+            <th name="th_ssa_gross" class="text-end" t-if="ssa_has_weights"><span>Tn. bruto</span></th>
+            <th name="th_ssa_tare" class="text-end" t-if="ssa_has_weights"><span>Tn. tara</span></th>
+            <th name="th_ssa_net" class="text-end" t-if="ssa_has_weights"><span>Tn. neto</span></th>
+            <th name="th_ssa_units" class="text-end" t-if="ssa_has_units"><span>Unidades</span></th>
+        </xpath>
+        <xpath expr="//td[@name='account_invoice_line_name']" position="after">
+            <t t-set="ssa_cw" t-value="line._ssa_get_weights()"/>
+            <td name="td_ssa_gross" class="text-end" t-if="ssa_has_weights"><span t-if="ssa_cw['has_weights']" t-out="ssa_cw['gross']" t-options="{'widget': 'float', 'precision': 3}"/></td>
+            <td name="td_ssa_tare" class="text-end" t-if="ssa_has_weights"><span t-if="ssa_cw['has_weights']" t-out="ssa_cw['tare']" t-options="{'widget': 'float', 'precision': 3}"/></td>
+            <td name="td_ssa_net" class="text-end" t-if="ssa_has_weights"><span t-if="ssa_cw['has_weights']" t-out="ssa_cw['net']" t-options="{'widget': 'float', 'precision': 3}"/></td>
+            <td name="td_ssa_units" class="text-end" t-if="ssa_has_units"><span t-if="ssa_cw['units']" t-out="ssa_cw['units']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+        </xpath>
+
+        <!-- Abonos (facturas rectificativas) con cantidades e importes en negativo -->
+        <xpath expr="//td[@name='td_quantity']/span[@t-field='line.quantity']" position="attributes">
+            <attribute name="t-if">o.move_type != 'out_refund'</attribute>
+        </xpath>
+        <xpath expr="//td[@name='td_quantity']/span[@t-field='line.quantity']" position="after">
+            <span t-if="o.move_type == 'out_refund'" class="text-nowrap" t-out="-line.quantity"
+                  t-options="{'widget': 'float', 'decimal_precision': 'Product Unit'}"/>
+        </xpath>
+        <xpath expr="//td[@name='td_subtotal']/span[@t-field='line.price_subtotal']" position="attributes">
+            <attribute name="t-if" add="o.move_type != 'out_refund'" separator=" and "/>
+        </xpath>
+        <xpath expr="//td[@name='td_subtotal']" position="inside">
+            <span t-if="not hide_prices and o.move_type == 'out_refund'" class="text-nowrap"
+                  t-out="-line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+        </xpath>
+        <xpath expr="//t[@t-call='account.document_tax_totals']" position="attributes">
+            <attribute name="t-if">o.tax_totals and o.move_type != 'out_refund'</attribute>
+        </xpath>
+        <xpath expr="//t[@t-call='account.document_tax_totals']" position="after">
+            <t t-if="o.move_type == 'out_refund'">
+                <tr>
+                    <td>Importe base</td>
+                    <td class="text-end"><span t-out="-o.amount_untaxed" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td>
+                </tr>
+                <tr t-foreach="o.line_ids.filtered(lambda l: l.tax_line_id)" t-as="ssa_tax_line">
+                    <td>IVA <span t-out="'%g' % ssa_tax_line.tax_line_id.amount"/>%</td>
+                    <td class="text-end"><span t-out="-abs(ssa_tax_line.balance)" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td>
+                </tr>
+                <tr class="border-black o_total">
+                    <td><strong>Total</strong></td>
+                    <td class="text-end"><strong t-out="-o.amount_total" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td>
+                </tr>
+            </t>
+        </xpath>
+
         <!-- Albarán(es) de origen sobre la descripción de cada línea -->
         <xpath expr="//td[@name='account_invoice_line_name']" position="inside">
             <t t-set="ssa_pickings" t-value="line._ssa_get_pickings()"/>
@@ -38,11 +93,6 @@
                 </t>
             </div>
             <t t-set="ssa_w" t-value="line._ssa_get_weights()"/>
-            <div t-if="ssa_w['has_weights']">
-                Tn. bruto <span t-out="ssa_w['gross']" t-options="{'widget': 'float', 'precision': 3}"/>
-                · Tn. tara <span t-out="ssa_w['tare']" t-options="{'widget': 'float', 'precision': 3}"/>
-                · Tn. neto <span t-out="ssa_w['net']" t-options="{'widget': 'float', 'precision': 3}"/>
-            </div>
             <div t-if="ssa_w['lots']">
                 Lote: <span t-out="', '.join(ssa_w['lots'])"/>
             </div>

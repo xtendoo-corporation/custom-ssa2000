@@ -10,7 +10,7 @@ class StockPicking(models.Model):
             ("gross_tare", "Toneladas brutas, tara y netas"),
         ],
         string="Cantidades del albarán",
-        default="net",
+        default="gross_tare",
         required=True,
         copy=True,
         help="Neto: se imprime una sola columna 'Tn. netas / unidades'. "

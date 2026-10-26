@@ -21,7 +21,9 @@ class AccountMoveLine(models.Model):
         tare = sum(moves.mapped("ssa_tare_weight"))
         lots = moves.move_line_ids.lot_id.mapped("name")
         origin_lots = [p.ssa_origin_lot for p in moves.picking_id if p.ssa_origin_lot]
+        units = sum(moves.mapped("ssa_units"))
         return {
+            "units": units,
             "has_weights": bool(gross or tare),
             "gross": gross,
             "tare": tare,

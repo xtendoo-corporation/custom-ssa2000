@@ -76,6 +76,7 @@
         <xpath expr="//table[@name='stock_move_line_table']" position="after">
             <t t-set="ssa_moves" t-value="o.move_ids.filtered(lambda m: m.quantity or m.product_uom_qty)"/>
             <t t-set="ssa_has_weights" t-value="o.ssa_weight_mode == 'gross_tare'"/>
+            <t t-set="ssa_has_units" t-value="any(m.ssa_units for m in ssa_moves)"/>
             <t t-set="ssa_has_prices" t-value="any(m.sale_line_id for m in ssa_moves)"/>
             <t t-set="ssa_has_lots" t-value="any(ssa_moves.move_line_ids.lot_id)"/>
             <table class="table table-sm o_main_table" name="ssa_move_table">
@@ -90,6 +91,7 @@
                             <t t-if="ssa_has_weights">Tn. neto</t>
                             <t t-else="">Tn. netas / unidades</t>
                         </th>
+                        <th name="th_ssa_units" class="px-2 text-end" t-if="ssa_has_units">Unidades</th>
                         <th name="th_ssa_price" class="px-2 text-end" t-if="ssa_has_prices">Precio</th>
                         <th name="th_ssa_amount" class="px-2 text-end" t-if="ssa_has_prices">Importe</th>
                     </tr>
@@ -113,6 +115,7 @@
                                 <span t-field="move.product_uom" groups="uom.group_uom"/>
                             </t>
                         </td>
+                        <td t-if="ssa_has_units" class="px-2 text-end"><span t-field="move.ssa_units"/></td>
                         <t t-if="ssa_has_prices">
                             <td class="px-2 text-end"><span t-if="move.sale_line_id" t-field="move.ssa_price_unit"/></td>
                             <td class="px-2 text-end"><span t-if="move.sale_line_id" t-field="move.ssa_price_subtotal"/></td>
