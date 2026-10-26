@@ -4,6 +4,18 @@ from odoo import fields, models
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
+    ssa_weight_mode = fields.Selection(
+        [
+            ("net", "Toneladas netas / unidades"),
+            ("gross_tare", "Toneladas brutas, tara y netas"),
+        ],
+        string="Cantidades del albarán",
+        default="net",
+        required=True,
+        copy=True,
+        help="Neto: se imprime una sola columna 'Tn. netas / unidades'. "
+        "Bruto y tara: se imprimen también las columnas Tn. bruto y Tn. tara.",
+    )
     ssa_origin_supplier_id = fields.Many2one(
         "res.partner",
         string="Proveedor origen mercancía",

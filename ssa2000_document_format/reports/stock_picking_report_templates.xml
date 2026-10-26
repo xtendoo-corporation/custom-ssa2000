@@ -75,7 +75,7 @@
         </xpath>
         <xpath expr="//table[@name='stock_move_line_table']" position="after">
             <t t-set="ssa_moves" t-value="o.move_ids.filtered(lambda m: m.quantity or m.product_uom_qty)"/>
-            <t t-set="ssa_has_weights" t-value="any(m.ssa_gross_weight or m.ssa_tare_weight for m in ssa_moves)"/>
+            <t t-set="ssa_has_weights" t-value="o.ssa_weight_mode == 'gross_tare'"/>
             <t t-set="ssa_has_prices" t-value="any(m.sale_line_id for m in ssa_moves)"/>
             <t t-set="ssa_has_lots" t-value="any(ssa_moves.move_line_ids.lot_id)"/>
             <table class="table table-sm o_main_table" name="ssa_move_table">
@@ -88,7 +88,7 @@
                         <th name="th_ssa_tare" class="px-2 text-end" t-if="ssa_has_weights">Tn. tara</th>
                         <th name="th_ssa_qty" class="px-2 text-end">
                             <t t-if="ssa_has_weights">Tn. neto</t>
-                            <t t-else="">Cantidad</t>
+                            <t t-else="">Tn. netas / unidades</t>
                         </th>
                         <th name="th_ssa_price" class="px-2 text-end" t-if="ssa_has_prices">Precio</th>
                         <th name="th_ssa_amount" class="px-2 text-end" t-if="ssa_has_prices">Importe</th>
@@ -142,9 +142,9 @@
                     <div class="text-muted small text-end">IVA no incluido</div>
                 </div>
             </div>
-            <div t-if="not is_html_empty(o.note)" name="ssa_observations" class="mb-3">
+            <div name="ssa_observations" class="mb-3">
                 <strong>Observaciones:</strong>
-                <span t-field="o.note"/>
+                <span t-if="not is_html_empty(o.note)" t-field="o.note"/>
             </div>
         </xpath>
     </template>

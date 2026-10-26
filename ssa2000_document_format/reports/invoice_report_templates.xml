@@ -6,6 +6,27 @@
             <span id="line_tax_ids" t-if="not hide_prices" t-out="line._ssa_tax_percent_label()"/>
         </xpath>
 
+        <!-- Observaciones siempre visibles en facturas de venta -->
+        <xpath expr="//div[@name='comment']" position="replace">
+            <div class="mb-3" name="comment">
+                <strong>Observaciones:</strong>
+                <span t-if="not is_html_empty(o.narration)" t-field="o.narration"/>
+            </div>
+        </xpath>
+
+        <!-- Factura rectificativa de abono: factura que modifica y motivo -->
+        <xpath expr="//div[@id='informations']" position="before">
+            <div t-if="o.move_type == 'out_refund'" class="mb-3" name="ssa_rectificative">
+                <strong>FACTURA RECTIFICATIVA</strong>
+                <div t-if="o.reversed_entry_id">
+                    La presente factura modifica la factura Núm.:
+                    <span t-out="o.reversed_entry_id.name"/>
+                    de fecha: <span t-out="o.reversed_entry_id.invoice_date" t-options="{'widget': 'date'}"/>
+                </div>
+                <div t-if="o.ref">El motivo de la devolución es: <span t-out="o.ref"/></div>
+            </div>
+        </xpath>
+
         <!-- Albarán(es) de origen sobre la descripción de cada línea -->
         <xpath expr="//td[@name='account_invoice_line_name']" position="inside">
             <t t-set="ssa_pickings" t-value="line._ssa_get_pickings()"/>

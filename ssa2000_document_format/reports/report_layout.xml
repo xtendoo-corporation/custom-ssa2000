@@ -13,9 +13,9 @@
         </xpath>
     </template>
 
-    <!-- Autofactura: solo el logo arriba a la izquierda; los datos de SSA figuran en el bloque CLIENTE -->
+    <!-- Autofactura: sin cabecera (ni logo ni datos de SSA); SSA figura en el bloque CLIENTE -->
     <template id="external_layout_standard_self_billing_ssa2000" inherit_id="web.external_layout_standard">
-        <xpath expr="//div[@name='company_address']/.." position="attributes">
+        <xpath expr="//div[@name='company_address']/../.." position="attributes">
             <attribute name="t-if">not (o and o._name == 'account.move' and o.move_type in ('in_invoice', 'in_refund'))</attribute>
         </xpath>
     </template>
@@ -34,7 +34,15 @@
                     <p>** Inscrita en el registro Mercantil de Sevilla con fecha 3 de Marzo de 1997 folio 71 del tomo 2477 de SOC, Hoja SE-28949</p>
                 </div>
             </t>
-            <div t-else="" class="flex-grow-1 text-start me-2" t-field="company.report_footer"/>
+            <div t-else="" class="flex-grow-1 text-start me-2">
+                <t t-if="o and o._name == 'account.move' and o.move_type in ('out_invoice', 'out_refund')
+                         and (o.partner_bank_id or company.partner_id.bank_ids)">
+                    <t t-set="ssa_bank" t-value="o.partner_bank_id or company.partner_id.bank_ids[:1]"/>
+                    <p><strong>** Forma de pago:</strong> Transferencia a cuenta
+                        <span t-out="ssa_bank.bank_id.name"/> <span t-out="ssa_bank.acc_number"/></p>
+                </t>
+                <div t-field="company.report_footer"/>
+            </div>
         </xpath>
     </template>
 </odoo>
