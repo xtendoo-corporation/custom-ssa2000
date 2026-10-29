@@ -23,7 +23,7 @@
                     <span t-out="o.reversed_entry_id.name"/>
                     de fecha: <span t-out="o.reversed_entry_id.invoice_date" t-options="{'widget': 'date'}"/>
                 </div>
-                <div t-if="o.ref">El motivo de la devolución es: <span t-out="o.ref"/></div>
+                <div t-if="o.ref">El motivo de la devolución es: <span t-out="o._ssa_refund_reason()"/></div>
             </div>
         </xpath>
 

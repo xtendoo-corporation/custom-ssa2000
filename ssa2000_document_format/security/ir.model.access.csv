@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ssa_canarias_line_user,ssa.canarias.line user,model_ssa_canarias_line,stock.group_stock_user,1,1,1,1
+access_ssa_canarias_line_sale,ssa.canarias.line sales,model_ssa_canarias_line,sales_team.group_sale_salesman,1,1,1,1
+access_ssa_canarias_line_invoice,ssa.canarias.line accounting,model_ssa_canarias_line,account.group_account_invoice,1,0,0,0

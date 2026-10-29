@@ -8,6 +8,9 @@
             <field name="company_registry" position="after">
                 <field name="ssa_registry_code"/>
                 <field name="ssa_delivery_footer"/>
+                <field name="ssa_signer_name"/>
+                <field name="ssa_signer_vat"/>
+                <field name="ssa_signer_position"/>
             </field>
         </field>
     </record>

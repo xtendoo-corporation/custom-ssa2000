@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_canarias_ssa2000" model="ir.actions.report">
+        <field name="name">Pack Canarias</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ssa2000_document_format.report_canarias_pack</field>
+        <field name="report_file">ssa2000_document_format.report_canarias_pack</field>
+        <field name="print_report_name">'Pack Canarias - %s' % (object.ssa_invoice_number or object.name)</field>
+        <field name="paperformat_id" ref="ssa2000_document_format.paperformat_canarias_ssa2000"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_canarias_pack">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="company" t-value="o.company_id"/>
+                <t t-set="rows" t-value="o._ssa_canarias_rows()"/>
+                <t t-set="partner" t-value="o.partner_id.commercial_partner_id or o.partner_id"/>
+                <t t-set="nif" t-value="(company.vat or '').replace('ES', '')"/>
+                <t t-set="reference" t-value="o._ssa_canarias_reference()"/>
+                <t t-set="date_text" t-value="o._ssa_canarias_date_text()"/>
+                <t t-set="total" t-value="sum(r['amount'] for r in rows)"/>
+                <t t-set="total_kg" t-value="sum(r['line'].net_kg for r in rows)"/>
+                <t t-set="total_units" t-value="sum(r['line'].units for r in rows)"/>
+                <t t-set="containers" t-value="', '.join(dict.fromkeys(r['line'].container for r in rows if r['line'].container))"/>
+                <t t-set="seals" t-value="', '.join(dict.fromkeys(r['line'].seal for r in rows if r['line'].seal))"/>
+                <t t-set="destinations" t-value="', '.join(dict.fromkeys(r['line'].destination for r in rows if r['line'].destination))"/>
+                <t t-call="web.basic_layout">
+                    <t t-set="o" t-value="o.with_context(lang='es_ES')"/>
+
+                    <!-- ===== Página 1: factura ===== -->
+                    <div class="page" style="font-size: 11px;">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 70px;" alt="Logo"/>
+                                <div class="mt-2" t-field="company.company_details"/>
+                                <div t-if="nif">C.I.F.: <span t-out="nif"/></div>
+                            </div>
+                            <div t-if="company.ssa_registry_code" class="border border-dark px-3 py-1 text-center">
+                                <div>Registro</div>
+                                <div>Junta de Andalucía</div>
+                                <strong t-out="company.ssa_registry_code"/>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <h2 class="mb-2"><strong>FACTURA</strong></h2>
+                                <table class="table table-sm table-bordered mb-0" style="width: 90%;">
+                                    <thead>
+                                        <tr><th>Fecha</th><th>Nº Factura</th><th>Cod Cliente</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span t-out="o.ssa_invoice_date" t-options="{'widget': 'date'}"/></td>
+                                            <td><strong t-out="o.ssa_invoice_number"/></td>
+                                            <td><span t-out="partner.ref"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <div class="border rounded p-2">
+                                    <strong>Cliente Destino</strong>
+                                    <div><strong t-out="partner.name"/></div>
+                                    <div t-if="partner.street" t-out="partner.street"/>
+                                    <div><span t-out="partner.zip"/> <span t-out="partner.city"/></div>
+                                    <div t-if="partner.state_id" t-out="partner.state_id.name"/>
+                                    <div t-if="partner.vat" t-out="(partner.vat or '').replace('ES', '')"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm table-bordered mt-3">
+                            <thead>
+                                <tr style="background-color: #e9e9e9;">
+                                    <th>CODIGO</th>
+                                    <th>DESCRIPCION</th>
+                                    <th class="text-end">Tn.BRUTO</th>
+                                    <th class="text-end">Tn.TARA</th>
+                                    <th class="text-end">Tn.NETO</th>
+                                    <th class="text-end">PRECIO</th>
+                                    <th class="text-end">IMPORTE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="rows" t-as="r">
+                                    <tr>
+                                        <td><span t-out="r['product'].default_code"/></td>
+                                        <td>
+                                            <div><strong>Albarán núm. <span t-out="o.origin or o.name"/> de Fecha <span t-out="o.date_done or o.scheduled_date" t-options="{'widget': 'date'}"/></strong></div>
+                                            <div t-out="r['product'].name"/>
+                                        </td>
+                                        <td class="text-end"><span t-if="r['gross']" t-out="r['gross']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                        <td class="text-end"><span t-if="r['tare']" t-out="r['tare']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                        <td class="text-end"><span t-out="r['tons']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                        <td class="text-end"><span t-out="r['price']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></td>
+                                        <td class="text-end"><span t-out="r['amount']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td/>
+                                        <td colspan="6">
+                                            <div t-if="r['product'].ssa_stat_code"><strong>PARTIDA ESTADÍSTICA: <span t-out="r['product'].ssa_stat_code"/></strong></div>
+                                            <div><strong>NÚMERO DE UNIDADES: <span t-out="r['line'].units" t-options="{'widget': 'float', 'precision': 0}"/></strong></div>
+                                            <div t-if="r['product'].ssa_goods_description"><strong t-out="r['product'].ssa_goods_description"/></div>
+                                            <div t-if="r['line'].container"><strong>Nº DE CONTENEDOR: <span t-out="r['line'].container"/></strong></div>
+                                            <div t-if="r['line'].seal"><strong>Nº DE PRECINTO: <span t-out="r['line'].seal"/></strong></div>
+                                            <div t-if="r['line'].lot"><strong>LOTE: <span t-out="r['line'].lot"/></strong></div>
+                                            <div t-if="r['line'].destination"><strong>DESTINO: <span t-out="r['line'].destination"/></strong></div>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <div class="border p-2 mb-3" style="min-height: 60px;">
+                            <strong><em>OBSERVACIONES:</em></strong>
+                            <span t-if="not is_html_empty(o.note)" t-field="o.note"/>
+                        </div>
+
+                        <table class="table table-sm table-bordered mb-1">
+                            <thead>
+                                <tr style="background-color: #e9e9e9;">
+                                    <th class="text-end">I.V.A. 21,00%</th>
+                                    <th class="text-end">I.V.A. 10,00%</th>
+                                    <th class="text-end">I.V.A. 4,00%</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>BASE IMPONIBLE:</td><td/><td/></tr>
+                                <tr><td>I.V.A.:</td><td/><td/></tr>
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-8">
+                                <t t-set="bank" t-value="company.partner_id.bank_ids[:1]"/>
+                                <div t-if="bank"><strong>** Forma de pago: Transferencia a cuenta <span t-out="bank.bank_id.name"/> <span t-out="bank.acc_number"/></strong></div>
+                            </div>
+                            <div class="col-4 text-end">
+                                <strong>TOTAL FACTURA: <span t-out="total" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></strong>
+                            </div>
+                        </div>
+                        <div class="mt-4" style="font-size: 9px;">
+                            <div>* La posesión de la presente factura no presupone el pago de la misma. Su pago se acredita por abono bancario o por recibo de caja.</div>
+                            <div>** Inscrita en el registro Mercantil de Sevilla con fecha 3 de Marzo de 1997 folio 71 del tomo 2477 de SOC, Hoja SE-28949</div>
+                        </div>
+                    </div>
+
+                    <!-- ===== Página 2: declaración fitosanitaria ===== -->
+                    <div class="page" style="page-break-before: always; font-size: 12px;">
+                        <h5 class="text-center"><strong>DECLARACIÓN ANEJA A LA SOLICITUD DE INSPECCIÓN FITOSANITARIA DE VEGETALES Y/O PRODUCTOS VEGETALES DESTINADOS A CANARIAS</strong></h5>
+                        <p class="mt-4">D/Dª <strong t-out="company.name"/></p>
+                        <p>Con DNI o NIF nº <strong t-out="nif"/></p>
+                        <p>En calidad de expedidor o representante legal del mismo de la mercancía que se especifica a continuación y cuya inspección fitosanitaria solicita ( nº de expediente ........ )</p>
+                        <p><strong>DECLARA: (1)</strong></p>
+                        <p>Que los vegetales o productos vegetales citados, que se presentan a inspección, cuyo destino es Canarias, han sido producidos en el país que figura en la casilla correspondiente.</p>
+                        <table class="table table-sm table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th>PARTIDA ARANCELARIA</th>
+                                    <th>NOMBRE PRODUCTO</th>
+                                    <th>NOMBRE BOTÁNICO</th>
+                                    <th>NÚMERO Y DESCRIPCIÓN BULTOS</th>
+                                    <th>KGRS</th>
+                                    <th>PAÍS DE PRODUCCIÓN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="rows" t-as="r">
+                                    <td><span t-out="r['product'].ssa_stat_code"/></td>
+                                    <td><span t-out="r['product'].name"/></td>
+                                    <td><span t-out="r['product'].ssa_botanical_name"/></td>
+                                    <td><span t-out="r['line'].units" t-options="{'widget': 'float', 'precision': 0}"/> <span t-out="r['product'].ssa_package_form"/></td>
+                                    <td><span t-out="r['line'].net_kg" t-options="{'widget': 'float', 'precision': 0}"/></td>
+                                    <td>ESPAÑA</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <p>CONTENEDOR N. <strong t-out="containers"/></p>
+                                <p>PRECINTO N. <strong t-out="seals"/></p>
+                            </div>
+                            <div class="col-6">
+                                <p>En Alcalá del Río a <span t-out="date_text"/></p>
+                                <p class="mt-4"><strong>EL DECLARANTE</strong></p>
+                                <p>Fdo.: <span t-out="company.ssa_signer_name"/></p>
+                            </div>
+                        </div>
+                        <div class="border p-2 mt-4">
+                            <strong>INFORMACIÓN DE LA INSPECCIÓN</strong>
+                            <p class="mb-1">La mercancía referida en la presente DECLARACIÓN ha sido inspeccionada y autorizado su envío mediante el certificado fitosanitario núm.: ..............................</p>
+                            <p class="mb-0"><strong>EL INSPECTOR</strong>&#160;&#160;&#160;&#160; Sello &#160;&#160;&#160;&#160; Fdo.:</p>
+                            <p class="mb-0">DIRECTOR DE ÁREA DE AGRICULTURA Y PESCA DE SEVILLA</p>
+                        </div>
+                        <p class="mt-3" style="font-size: 9px;">(1) La no indicación, ocultación o falseamiento del verdadero origen de esta mercancía está tipificado como infracción grave de acuerdo con lo dispuesto en al Artículo 55 r) de la Ley 43/2002 de 20 de noviembre, de Sanidad Vegetal.</p>
+                    </div>
+
+                    <!-- ===== Página 3: Anexo IV (1 de 2) ===== -->
+                    <div class="page" style="page-break-before: always; font-size: 11px;">
+                        <div class="text-end"><strong t-out="reference"/></div>
+                        <h4 class="text-center mb-0"><strong>ANEXO IV</strong></h4>
+                        <p class="text-center">Declaración del exportador</p>
+                        <p class="text-end">Nº de referencia (1): <strong t-out="reference"/></p>
+                        <p><strong>Datos de la empresa declarante.</strong></p>
+                        <p>Nombre, razón social: <strong t-out="company.name"/></p>
+                        <p>N.I.F/: <strong t-out="nif"/></p>
+                        <p><strong>Datos de la persona firmante.</strong></p>
+                        <p>Nombre y apellidos: <strong t-out="company.ssa_signer_name"/></p>
+                        <p>DNI: <strong t-out="company.ssa_signer_vat"/></p>
+                        <p>Cargo en la empresa: <strong t-out="company.ssa_signer_position"/></p>
+                        <p><strong>Datos de la partida exportada (2).</strong></p>
+                        <table class="table table-sm table-bordered text-center">
+                            <thead>
+                                <tr><th colspan="4">Partida exportada</th></tr>
+                                <tr><th>Denominación producto</th><th>Peso neto (kg)</th><th>Forma</th><th>Nombre Botánico</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="rows" t-as="r">
+                                    <td><span t-out="r['product'].name"/></td>
+                                    <td><span t-out="r['line'].net_kg" t-options="{'widget': 'float', 'precision': 0}"/></td>
+                                    <td><span t-out="r['product'].ssa_package_form"/></td>
+                                    <td><span t-out="r['product'].ssa_botanical_name"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered text-center">
+                            <thead>
+                                <tr><th>Tipo de bulto</th><th>Número de bultos</th><th>Identificación del Transporte</th><th>Otras medidas: unidades (uds)</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="rows" t-as="r">
+                                    <td><span t-out="r['product'].ssa_package_form"/></td>
+                                    <td><span t-out="r['line'].units" t-options="{'widget': 'float', 'precision': 0}"/></td>
+                                    <td><span t-out="r['line'].container"/></td>
+                                    <td/>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>El abajo firmante, con capacidad jurídica y de obrar suficiente para este acto, en su propio nombre o en representación de la empresa, y con relación a la partida arriba indicada,</p>
+                        <p><strong>DECLARA BAJO SU RESPONSABILIDAD:</strong></p>
+                        <ol>
+                            <li>Conocer los requisitos fitosanitarios exigidos por <strong>Islas Canarias</strong> (país de destino).</li>
+                            <li>Que, de acuerdo con los documentos e información disponibles, los vegetales o productos vegetales u otros objetos a exportar cumplen los requisitos indicados en el punto 1.</li>
+                            <li>Que son ciertos los datos consignados en esta declaración, reuniendo por ello la partida los requisitos exigidos y comprometiéndose a probar documentalmente, cuando le sea requerido, todos los datos que figuran en la misma.</li>
+                            <li>Que asume la responsabilidad de los perjuicios derivados en caso de que la autoridad del país de destino imponga restricciones, o que los requisitos fitosanitarios conocidos antes de la exportación no sean los exigidos para el ingreso de la mercancía en su territorio.</li>
+                            <li>Que, <span t-out="company.name"/> dispone de la documentación que así lo acredita, y que la pondrá a disposición de la Administración cuando le sea requerida.</li>
+                        </ol>
+                        <p>La autorización de exportación de la partida, en caso de que algún dato declarado fuera incorrecto, falso o inexacto supondrá la asunción de las responsabilidades correspondientes previstas en la Ley 43/2002, de 20 de noviembre, de sanidad vegetal y demás normativa aplicable, incluidas las sancionadoras.</p>
+                        <p>Y para que así conste, firma la presente declaración en Alcalá del Río a <span t-out="date_text"/></p>
+                        <p class="mt-4">Fdo: <span t-out="company.ssa_signer_name"/> &#160;&#160;&#160;&#160; (Sello de la empresa en su caso)</p>
+                        <p class="text-end"><strong>Página 1 de 2</strong></p>
+                        <div style="font-size: 8px;">
+                            <div>1 Nº de referencia único, asignado por el exportador a cada una de sus declaraciones, según su sistema de registro. Si la declaración consta de varias páginas, deberá figurar en cada una de ellas.</div>
+                            <div>2 Deberán indicarse los mismos datos que los referidos en la solicitud de inspección para la obtención del Certificado Fitosanitario de Exportación.</div>
+                        </div>
+                    </div>
+
+                    <!-- ===== Página 4: Anexo IV (2 de 2) ===== -->
+                    <div class="page" style="page-break-before: always; font-size: 11px;">
+                        <div class="text-end"><strong t-out="reference"/></div>
+                        <p class="text-end">Nº de referencia (1): <strong t-out="reference"/></p>
+                        <p><strong>Documentación que se adjunta a la presente declaración (3).</strong></p>
+                        <table class="table table-sm table-bordered" style="width: 60%;">
+                            <thead><tr><th>Tipo de documento</th><th>Nº referencia</th></tr></thead>
+                            <tbody>
+                                <tr><td>FACTURA</td><td><span t-out="o.ssa_invoice_number"/></td></tr>
+                            </tbody>
+                        </table>
+                        <p class="text-end mt-5"><strong>Página 2 de 2</strong></p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
