@@ -36,7 +36,6 @@
                             <div>
                                 <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 70px;" alt="Logo"/>
                                 <div class="mt-2" t-field="company.company_details"/>
-                                <div t-if="nif">C.I.F.: <span t-out="nif"/></div>
                             </div>
                             <div t-if="company.ssa_registry_code" class="border border-dark px-3 py-1 text-center">
                                 <div>Registro</div>
