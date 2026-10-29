@@ -23,7 +23,7 @@
     <!-- El CIF ya figura en los datos de la compañía de la cabecera: se oculta la línea de NIF del layout -->
     <template id="external_layout_standard_vat_ssa2000" inherit_id="web.external_layout_standard">
         <xpath expr="//ul[@name='company_address_list']/li[@t-if='not forced_vat']" position="replace"/>
-        <xpath expr="//ul[@name='company_address_list']/li[@t-else='']" position="replace"/>
+        <xpath expr="//ul[@name='company_address_list']/li[@t-else=''][.//span[@t-esc='forced_vat']]" position="replace"/>
     </template>
 
     <!-- En albaranes se imprime el pie específico de albarán (el de la compañía habla de "factura") -->
