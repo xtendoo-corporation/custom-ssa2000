@@ -30,6 +30,10 @@
                 <t t-call="web.basic_layout">
                     <t t-set="o" t-value="o.with_context(lang='es_ES')"/>
 
+                    <style type="text/css">
+                        table.ssa-plain, table.ssa-plain td, table.ssa-plain th { border: 0 !important; }
+                    </style>
+
                     <!-- ===== Página 1: factura ===== -->
                     <div class="page" style="font-size: 11px;">
                         <div class="d-flex justify-content-between align-items-start">
@@ -153,7 +157,7 @@
                             DECLARACIÓN ANEJA A LA SOLICITUD DE INSPECCIÓN FITOSANITARIA DE<br/>
                             VEGETALES Y/O PRODUCTOS VEGETALES DESTINADOS A CANARIAS
                         </div>
-                        <table style="width: 100%; margin-top: 18px; font-size: 13px;">
+                        <table class="ssa-plain" style="width: 100%; margin-top: 18px; font-size: 13px;">
                             <tr><td style="width: 22%; padding: 5px 0;">D/Dª</td><td style="text-transform: uppercase;"><span t-out="company.name"/></td></tr>
                             <tr><td style="padding: 5px 0;">Con DNI o NIF nº</td><td><span t-out="nif"/></td></tr>
                         </table>
@@ -190,7 +194,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <table style="width: 100%; margin-top: 8px;">
+                        <table class="ssa-plain" style="width: 100%; margin-top: 8px;">
                             <tr>
                                 <td style="width: 55%; vertical-align: top;">
                                     <div style="font-weight: bold; font-size: 13px;">CONTENEDOR N. &#160;&#160;<span t-out="containers"/></div>
@@ -199,7 +203,7 @@
                                 <td style="vertical-align: top; padding-top: 6px;">En Alcalá del Río a <span t-out="date_text"/></td>
                             </tr>
                         </table>
-                        <table style="width: 100%; margin-top: 8px;">
+                        <table class="ssa-plain" style="width: 100%; margin-top: 8px;">
                             <tr>
                                 <td style="width: 50%; vertical-align: top;">
                                     <div style="font-weight: bold; font-size: 13px; margin-bottom: 6px;">INFORMACIÓN DE LA INSPECCIÓN</div>
@@ -290,7 +294,7 @@
                         </ol>
                         <p style="margin-top: 10px; line-height: 1.35;">La autorización de exportación de la partida, en caso de que algún dato declarado fuera incorrecto, falso o inexacto supondrá la asunción de las responsabilidades correspondientes previstas en la Ley 43/2002, de 20 de noviembre, de sanidad vegetal y demás normativa aplicable, incluidas las sancionadoras.</p>
                         <p style="margin-top: 8px;">Y para que así conste, firma la presente declaración en Alcalá del Río a <span t-out="date_text"/></p>
-                        <table style="width: 100%; margin-top: 26px;">
+                        <table class="ssa-plain" style="width: 100%; margin-top: 26px;">
                             <tr>
                                 <td style="width: 45%;">Fdo: <span t-out="company.ssa_signer_name"/></td>
                                 <td>(Sello de la empresa en su caso)</td>

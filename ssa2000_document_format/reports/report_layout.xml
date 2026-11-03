@@ -66,6 +66,17 @@
                     border-radius: 6px;
                     padding: 8px 10px;
                 }
+                div[name='div_outgoing_address'] address {
+                    border: 0 !important;
+                    padding: 0 !important;
+                }
+                table[name='invoice_line_table'] thead th[name='th_description'] {
+                    width: 30% !important;
+                }
+                div[name='comment'] {
+                    clear: both !important;
+                    margin-top: 14px !important;
+                }
                 div[name='ssa_observations'], div[name='comment'] {
                     border: 1px solid #000;
                     padding: 6px 8px;
