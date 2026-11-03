@@ -1,7 +1,8 @@
+import base64
 import re
 
 from odoo import api, fields, models
-from odoo.tools import format_date
+from odoo.tools import file_open, format_date
 
 
 class StockPicking(models.Model):
@@ -152,3 +153,9 @@ class StockPicking(models.Model):
     def action_ssa_print_canarias(self):
         self.ensure_one()
         return self.env.ref("ssa2000_document_format.action_report_canarias_ssa2000").report_action(self)
+
+    @api.model
+    def _ssa_escudo_data_uri(self):
+        """Escudo de España de los impresos oficiales, como data URI para el PDF."""
+        with file_open("ssa2000_document_format/static/src/img/escudo.png", "rb") as f:
+            return "data:image/png;base64," + base64.b64encode(f.read()).decode()

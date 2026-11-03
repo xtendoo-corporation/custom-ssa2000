@@ -26,6 +26,55 @@
         <xpath expr="//ul[@name='company_address_list']/li[@t-else=''][.//span[@t-esc='forced_vat']]" position="replace"/>
     </template>
 
+    <!-- Aspecto con cajas, bordes y cabeceras sombreadas, como los modelos del cliente -->
+    <template id="external_layout_standard_boxed_ssa2000" inherit_id="web.external_layout_standard">
+        <xpath expr="//t[@t-call='web.address_layout']" position="before">
+            <style type="text/css">
+                table[name='ssa_move_table'],
+                table[name='invoice_line_table'],
+                table[name='ssa_self_billing_table'] {
+                    border: 1px solid #000 !important;
+                    border-collapse: collapse !important;
+                }
+                table[name='ssa_move_table'] thead th,
+                table[name='invoice_line_table'] thead th,
+                table[name='ssa_self_billing_table'] thead th {
+                    background-color: #e6e6e6 !important;
+                    border: 1px solid #000 !important;
+                    color: #000 !important;
+                    font-weight: bold !important;
+                    padding: 4px 6px !important;
+                }
+                table[name='ssa_move_table'] tbody td,
+                table[name='invoice_line_table'] tbody td,
+                table[name='ssa_self_billing_table'] tbody td {
+                    border-left: 1px solid #000 !important;
+                    border-right: 1px solid #000 !important;
+                    border-top: 0 !important;
+                    padding: 4px 6px !important;
+                }
+                #total table, div[name='ssa_totals'] table {
+                    border: 1px solid #000 !important;
+                    border-collapse: collapse !important;
+                }
+                #total table td, div[name='ssa_totals'] table td {
+                    border: 1px solid #999 !important;
+                    padding: 3px 6px !important;
+                }
+                div[name='div_outgoing_address'], div[name='address'] address {
+                    border: 1px solid #000;
+                    border-radius: 6px;
+                    padding: 8px 10px;
+                }
+                div[name='ssa_observations'], div[name='comment'] {
+                    border: 1px solid #000;
+                    padding: 6px 8px;
+                    min-height: 50px;
+                }
+            </style>
+        </xpath>
+    </template>
+
     <!-- En albaranes se imprime el pie específico de albarán (el de la compañía habla de "factura") -->
     <template id="external_layout_standard_ssa2000" inherit_id="web.external_layout_standard">
         <xpath expr="//div[hasclass('o_footer_content')]/div[@t-field='company.report_footer']" position="replace">

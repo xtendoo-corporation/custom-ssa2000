@@ -87,7 +87,7 @@
                             </tbody>
                         </table>
                         <div class="row">
-                            <div class="col-7 ms-auto">
+                            <div class="col-7 ms-auto" name="ssa_totals">
                                 <table class="table table-sm">
                                     <tr>
                                         <td>Total bruto</td>

@@ -131,7 +131,7 @@
               priority="20">
         <xpath expr="//table[@name='ssa_move_table']" position="after">
             <div class="row" t-if="o.move_ids.filtered('sale_line_id')">
-                <div class="col-5 ms-auto">
+                <div class="col-5 ms-auto" name="ssa_totals">
                     <t t-set="ssa_currency" t-value="o.move_ids.filtered('sale_line_id')[:1].ssa_currency_id"/>
                     <table class="table table-sm">
                         <tr class="border-black o_total">

@@ -12,6 +12,7 @@
         "data/report_paperformat_data.xml",
         "data/res_company_data.xml",
         "views/res_company_views.xml",
+        "views/account_move_views.xml",
         "views/product_views.xml",
         "views/stock_picking_views.xml",
         "reports/stock_picking_report_templates.xml",
