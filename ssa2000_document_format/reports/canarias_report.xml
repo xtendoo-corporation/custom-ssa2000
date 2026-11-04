@@ -124,6 +124,8 @@
                             </tbody>
                         </table>
 
+                        <div style="text-align: right; margin: 0 0 10px 0;"><t t-out="seal"/></div>
+
                         <div class="border p-2 mb-3" style="min-height: 60px;">
                             <strong><em>OBSERVACIONES:</em></strong>
                             <span t-if="not is_html_empty(o.note)" t-field="o.note"/>
