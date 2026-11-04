@@ -13,6 +13,13 @@
         </xpath>
     </template>
 
+    <!-- Datos de la compañía a todo el ancho de la cabecera, para que los teléfonos no salten de línea -->
+    <template id="external_layout_standard_wide_header_ssa2000" inherit_id="web.external_layout_standard">
+        <xpath expr="//div[@name='company_address']" position="attributes">
+            <attribute name="style">width: 100%; max-width: 100%; flex: 0 0 100%;</attribute>
+        </xpath>
+    </template>
+
     <!-- Autofactura: sin cabecera (ni logo ni datos de SSA); SSA figura en el bloque CLIENTE -->
     <template id="external_layout_standard_self_billing_ssa2000" inherit_id="web.external_layout_standard">
         <xpath expr="//div[@name='company_address']/../.." position="attributes">

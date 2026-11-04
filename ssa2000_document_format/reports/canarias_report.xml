@@ -30,6 +30,12 @@
                 <t t-call="web.basic_layout">
                     <t t-set="o" t-value="o.with_context(lang='es_ES')"/>
 
+                    <t t-set="seal">
+                        <div style="display: inline-block; text-align: center; padding: 5px 9px; border: 1px solid #1e4d2b; border-radius: 6px; font-size: 8px; line-height: 1.3; color: #000; white-space: nowrap;">
+                            <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="height: 44px;" alt="Sello"/>
+                            <div t-field="company.company_details"/>
+                        </div>
+                    </t>
                     <style type="text/css">
                         table.ssa-plain, table.ssa-plain td, table.ssa-plain th { border: 0 !important; }
                     </style>
@@ -215,6 +221,7 @@
                                 <div style="display: inline-block; vertical-align: top; width: 44%; vertical-align: top; padding-top: 4px">
                                     <div style="font-size: 13px;">EL DECLARANTE</div>
                                     <div style="margin-top: 70px;">Fdo.: <span t-out="company.ssa_signer_name"/></div>
+                                    <div style="margin-top: 14px;"><t t-out="seal"/></div>
                                 </div>
                             </div>
                         </div>
@@ -230,7 +237,7 @@
                             <div style="font-size: 15px; font-weight: bold;">ANEXO IV</div>
                             <div style="font-size: 13px;">Declaración del exportador</div>
                         </div>
-                        <div style="text-align: right; margin-top: 4px; font-weight: bold; font-size: 11px;">Nº de referencia (1): <span t-att-style="typed" t-out="reference"/> ...........................</div>
+                        <div style="text-align: right; margin-top: 4px; font-weight: bold; font-size: 11px;">Nº de referencia (1): <span style="display: inline-block; min-width: 170px; border-bottom: 1px dotted #000; text-align: center; font-family: 'Courier New', 'Liberation Mono', monospace; font-size: 12px;" t-out="reference"/></div>
 
                         <div style="font-weight: bold; margin-top: 14px; font-size: 12px;">Datos de la empresa declarante.</div>
                         <div style="margin-top: 8px;">Nombre, razón social: ............... <span t-att-style="typed" t-out="company.name"/> ...................................</div>
@@ -297,7 +304,7 @@
                         <div class="ssa-plain" style="width: 100%; margin-top: 26px;">
                             <div>
                                 <div style="display: inline-block; vertical-align: top; width: 45%">Fdo: <span t-out="company.ssa_signer_name"/></div>
-                                <div style="display: inline-block; vertical-align: top; width: 44%">(Sello de la empresa en su caso)</div>
+                                <div style="display: inline-block; vertical-align: top; width: 44%">(Sello de la empresa en su caso)<div style="margin-top: 6px;"><t t-out="seal"/></div></div>
                             </div>
                         </div>
                         <div style="text-align: right; font-weight: bold; margin-top: 18px;">Página 1 de 2</div>
@@ -311,7 +318,7 @@
                     <!-- ===== Página 4: Anexo IV (2 de 2) ===== -->
                     <div class="page" style="page-break-before: always; font-family: Arial, 'Liberation Sans', sans-serif; font-size: 11px; color: #000;">
                         <div style="text-align: right;"><img t-att-src="o._ssa_escudo_data_uri()" style="height: 70px;" alt="Escudo"/></div>
-                        <div style="text-align: right; margin-top: 4px; font-weight: bold; font-size: 11px;">Nº de referencia (1): <span style="font-family: 'Courier New', 'Liberation Mono', monospace;" t-out="reference"/> ...........................</div>
+                        <div style="text-align: right; margin-top: 4px; font-weight: bold; font-size: 11px;">Nº de referencia (1): <span style="display: inline-block; min-width: 170px; border-bottom: 1px dotted #000; text-align: center; font-family: 'Courier New', 'Liberation Mono', monospace; font-size: 12px;" t-out="reference"/></div>
                         <div style="font-weight: bold; margin-top: 18px; font-size: 12px;">Documentación que se adjunta a la presente declaración <sup>3</sup>.</div>
                         <table style="width: 70%; border-collapse: collapse; margin-top: 8px; border: 1px solid #000;">
                             <thead>
