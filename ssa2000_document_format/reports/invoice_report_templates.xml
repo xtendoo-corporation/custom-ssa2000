@@ -105,7 +105,10 @@
             <t t-set="ssa_picking" t-value="o._ssa_canarias_picking()"/>
             <t t-if="ssa_picking" t-call="web.basic_layout">
                 <t t-set="o" t-value="ssa_picking.with_context(lang='es_ES')"/>
-                <t t-call="ssa2000_document_format.report_canarias_annexes"/>
+                <!-- La factura no tiene márgenes laterales en el paperformat: los damos aquí para que se vea como el pack -->
+                <div style="padding: 0 12mm;">
+                    <t t-call="ssa2000_document_format.report_canarias_annexes"/>
+                </div>
             </t>
         </xpath>
     </template>
