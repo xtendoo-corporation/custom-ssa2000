@@ -14,6 +14,14 @@ class AccountMove(models.Model):
         "Al elegirla se pone el impuesto correspondiente en todas las líneas.",
     )
 
+    def _ssa_canarias_picking(self):
+        """Albarán de Canarias del que procede la factura (None si no es una factura de venta de Canarias)."""
+        self.ensure_one()
+        if self.move_type != "out_invoice":
+            return self.env["stock.picking"]
+        orders = self.invoice_line_ids.sale_line_ids.order_id
+        return orders.picking_ids.filtered(lambda p: p.state != "cancel" and p.ssa_is_canarias)[:1]
+
     @api.onchange("ssa_withholding_base")
     def _onchange_ssa_withholding_base(self):
         if not self.ssa_withholding_base:
