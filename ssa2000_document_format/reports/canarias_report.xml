@@ -152,6 +152,27 @@
         </t>
     </template>
 
+    <!-- Solo las páginas 2-4 (declaración y Anexo IV) con el formato del pack: se anexan al PDF de la factura de Canarias -->
+    <record id="action_report_canarias_annexes_ssa2000" model="ir.actions.report">
+        <field name="name">Anexos Canarias</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ssa2000_document_format.report_canarias_annexes_only</field>
+        <field name="report_file">ssa2000_document_format.report_canarias_annexes_only</field>
+        <field name="paperformat_id" ref="ssa2000_document_format.paperformat_canarias_ssa2000"/>
+    </record>
+
+    <template id="report_canarias_annexes_only">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <t t-set="o" t-value="o.with_context(lang='es_ES')"/>
+                    <t t-call="ssa2000_document_format.report_canarias_annexes"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
     <!-- Sello de la empresa (compañía en la variable company) -->
     <template id="report_canarias_seal">
             <div style="display: inline-block; text-align: center; padding: 5px 9px; border: 1px solid #1e4d2b; border-radius: 6px; font-size: 8px; line-height: 1.3; color: #000; white-space: nowrap;">
