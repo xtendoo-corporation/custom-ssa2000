@@ -98,18 +98,4 @@
             </div>
         </xpath>
     </template>
-
-    <!-- Facturas de Canarias: tras la factura, declaración fitosanitaria y Anexo IV (también en el PDF del portal) -->
-    <template id="report_invoice_canarias_ssa2000" inherit_id="account.report_invoice">
-        <xpath expr="//t[@t-call='account.report_invoice_document']" position="after">
-            <t t-set="ssa_picking" t-value="o._ssa_canarias_picking()"/>
-            <t t-if="ssa_picking" t-call="web.basic_layout">
-                <t t-set="o" t-value="ssa_picking.with_context(lang='es_ES')"/>
-                <!-- La factura no tiene márgenes laterales en el paperformat: los damos aquí para que se vea como el pack -->
-                <div style="padding: 0 12mm; zoom: 0.85;">
-                    <t t-call="ssa2000_document_format.report_canarias_annexes"/>
-                </div>
-            </t>
-        </xpath>
-    </template>
 </odoo>

@@ -6,3 +6,4 @@ from . import account_tax
 from . import product_template
 from . import ssa_canarias_line
 from . import account_move
+from . import ir_actions_report
