@@ -9,8 +9,14 @@
         <!-- Observaciones siempre visibles en facturas de venta -->
         <xpath expr="//div[@name='comment']" position="replace">
             <div class="mb-3" name="comment">
+                <!-- Factura de Canarias: sello de la empresa junto a las observaciones de la primera página -->
+                <div t-if="o._ssa_canarias_picking()" style="float: right; margin-left: 10px;">
+                    <t t-set="company" t-value="o.company_id"/>
+                    <t t-call="ssa2000_document_format.report_canarias_seal"/>
+                </div>
                 <strong>Observaciones:</strong>
                 <span t-if="not is_html_empty(o.narration)" t-field="o.narration"/>
+                <div style="clear: both;"/>
             </div>
         </xpath>
 
